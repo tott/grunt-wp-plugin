@@ -42,8 +42,8 @@ class {%= class_name %} {
 	private $settings_page_name = null;
 	private $dashed_name = '{%= name %}';
 	private $underscored_name = '{%= js_safe_name %}';
-	private $js_version = '{%= grunt.template.today('yymmddhhiiss') %}';
-	private $css_version = '{%= grunt.template.today('yymmddhhiiss') %}';
+	private $js_version = '{%= grunt.template.today('yymmddhhMMss') %}';
+	private $css_version = '{%= grunt.template.today('yymmddhhMMss') %}';
 
 	public function __construct() {
 		add_action( 'admin_init', array( &$this, 'register_setting' ) );

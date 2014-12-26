@@ -86,7 +86,7 @@ class {%= class_name %} {
 		self::instance()->settings_page_name = sprintf( __( '%s Settings', self::instance()->plugin_prefix ), self::instance()->plugin_name );
 
 		if ( 1 == self::instance()->settings['enable'] ) {
-			add_action( 'init', self::instance()->init_hook_enabled() );
+			add_action( 'init', array( self::instance(), 'init_hook_enabled' ) );
 		}
 		self::instance()->init_hook_always();
 	}
@@ -96,7 +96,7 @@ class {%= class_name %} {
 	 */
 	public static function instance() {
 		if ( self::$__instance == NULL )
-			self::$__instance = new {%= class_name %};
+			self::$__instance = new self;
 		return self::$__instance;
 	}
 
@@ -167,6 +167,8 @@ class {%= class_name %} {
 
 			<table class="form-table">
 				<?php foreach( $this->settings as $setting => $value): ?>
+				<?php if ( ! isset( $this->settings_texts[$setting] ) ) { continue; } ?>
+				<?php do_action( $this->plugin_prefix . '_pre_setting', $setting, $value ); ?>
 				<tr valign="top">
 					<th scope="row">
 						<label for="<?php echo $this->dashed_name . '-' . $setting; ?>">
@@ -207,8 +209,9 @@ class {%= class_name %} {
 						<?php if ( !empty( $this->settings_texts[$setting]['desc'] ) ) { echo $this->settings_texts[$setting]['desc']; } ?>
 					</td>
 				</tr>
+				<?php do_action( $this->plugin_prefix . '_post_setting', $setting, $value ); ?>
 				<?php endforeach; ?>
-				<?php if ( 1 == $this->settings['enable'] ): ?>
+				<?php if ( 1 == $this->get_setting( 'enable' ) ): ?>
 					<tr>
 						<td colspan="3">
 							<p>The script has been enabled</p>
